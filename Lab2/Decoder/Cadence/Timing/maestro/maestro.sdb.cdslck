@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      aieswary
+HostName                       viterbi-scf2.usc.edu
+ProcessIdentifier              316779
+ProcessCreationTime_UTC        1739330265
+ProcessCreationTime_Readable   Tue Feb 11 19:17:45 2025 PST
+AppIdentifier                  /usr/local/cadence/ICADVM201/tools/dfII/bin/64bit/virtuoso
+OSType                         lnx86
+ReasonForPlacingEditLock       
+FilePathUsedToEditLock         /home/viterbi/04/aieswary/work_gpdk045/Lab2/Timing/maestro/maestro.sdb
+TimeEditLocked                 Tue Feb 11 19:19:13 2025 PST

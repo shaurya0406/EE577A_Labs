@@ -1,0 +1,25 @@
+Starting Single Run, Sweeps and Corners...
+
+Current time: Tue Feb 11 19:19:20 2025 
+Best design point: 1
+Design specs: 
+	Lab2_Timing_1	corner	Nominal - 
+	AfallTime		0
+	AriseTime		0
+	AY_cellFall		17.54p
+	AY_cellRise		2.99n
+	AY_fallTransistion		22.15p
+	AY_riseTransistion		10.74p
+	BfallTime		0
+	BriseTime		0
+	BY_cellFall		9.956p
+	BY_cellRise		-9.956p
+	BY_fallTransistion		22.15p
+	BY_riseTransistion		10.74p
+Design parameters: 
+
+ExplorerRun.0
+Number of points completed: 1
+Number of simulation errors: 0
+ExplorerRun.0 completed. 
+Current time: Tue Feb 11 19:19:33 2025 

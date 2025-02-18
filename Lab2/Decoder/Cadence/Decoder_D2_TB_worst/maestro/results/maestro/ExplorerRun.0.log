@@ -1,0 +1,14 @@
+Starting Single Run, Sweeps and Corners...
+
+Current time: Mon Feb 17 20:02:17 2025 
+Best design point: 1
+Design specs: 
+	Lab2_Decoder_D2_TB_1	corner	Nominal - 
+	delay(?wf1 VT("/C") ?value1 0.5 ?edge1 "falling" ?nth1 1 ?td1 0.0 ?tol1 nil ?wf2 VT("/W0") ?value2 0.5 ?edge2 "rising" ?nth2 1 ?tol2 nil ?td2 nil ?stop nil ?multiple nil)		110.7p
+Design parameters: 
+
+ExplorerRun.0
+Number of points completed: 1
+Number of simulation errors: 0
+ExplorerRun.0 completed. 
+Current time: Mon Feb 17 20:02:28 2025 
