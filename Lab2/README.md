@@ -13,13 +13,13 @@
 ## 2-Input NAND Gate
 
 ### Schematic & Testbench
-![NAND2_Sch](/Lab2/NAND2_DelayAnalysis/images/NAND2_Sch.png)
+![NAND2_Sch](NAND2_DelayAnalysis/images/NAND2_Sch.png)
 ### Cadence ADE Setup
-![TranSweep_NAND_ADE](/Lab2/NAND2_DelayAnalysis/images/TranSweep_NAND_ADE.png)
+![TranSweep_NAND_ADE]( NAND2_DelayAnalysis/images/TranSweep_NAND_ADE.png)
 ### Waveforms
-![TranSweep_NAND](/Lab2/NAND2_DelayAnalysis/images/TranSweep_NAND.png)
+![TranSweep_NAND]( NAND2_DelayAnalysis/images/TranSweep_NAND.png)
 
-Results are stored in [CapSweep_NAND CSV file](/Lab2/NAND2_DelayAnalysis/CapSweep_NAND.csv) 
+Results are stored in [CapSweep_NAND CSV file]( NAND2_DelayAnalysis/CapSweep_NAND.csv) 
 
 ### Extracting Delay Function
 Linear regression formula for worst-case rising: 
@@ -33,9 +33,9 @@ Delay = 0.000000000023085 * CapOut + 0.000000000018595
 $$
 
 ### Linear Regression
-![DelayFunction_RISE](/Lab2/NAND2_DelayAnalysis/images/DelayFunction_RISE.png)
+![DelayFunction_RISE]( NAND2_DelayAnalysis/images/DelayFunction_RISE.png)
 
-![DelayFunction_FALL](/Lab2/NAND2_DelayAnalysis/images/DelayFunction_FALL.png)
+![DelayFunction_FALL]( NAND2_DelayAnalysis/images/DelayFunction_FALL.png)
 
 --- 
 
@@ -203,23 +203,23 @@ Using a **2-stage 2:4 pre-decoding strategy**, we significantly **optimize** the
 
 ### **Design D1**
 ### D1 Schematic
-![Decoder_D1_Sch](/Lab2/Decoder/images/Decoder_D1_Sch.png)
+![Decoder_D1_Sch]( Decoder/images/Decoder_D1_Sch.png)
 ### D1 Testbench
-![Decoder_D1_TB](/Lab2/Decoder/images/Decoder_D1_TB.png)
+![Decoder_D1_TB]( Decoder/images/Decoder_D1_TB.png)
 ### D1 Exhaustive Logic Verification
-![Decoder_D1_Exhaustive](/Lab2/Decoder/images/Decoder_D1_Exhaustive.png)
+![Decoder_D1_Exhaustive]( Decoder/images/Decoder_D1_Exhaustive.png)
 ### D1 Worst Case Scenario for W0
 Test Vector1: 1010 -> 0000
 
 Delay: 108.1p
 
-![Decoder_D1_0001_0000](/Lab2/Decoder/images/Decoder_D1_1010_0000_delay.png)
+![Decoder_D1_0001_0000]( Decoder/images/Decoder_D1_1010_0000_delay.png)
 
 Test Vector2: 1100 -> 0000
 
 Delay: 109.7p
 
-![Decoder_D1_0000_1100_delay](/Lab2/Decoder/images/Decoder_D1_1100_0000_delay.png)
+![Decoder_D1_0000_1100_delay]( Decoder/images/Decoder_D1_1100_0000_delay.png)
 
 ---
 
@@ -227,27 +227,27 @@ Delay: 109.7p
 ### D2 Schematic
 **2-Input Decoder**
 
-![Decoder2x4_Sch](/Lab2/Decoder/images/Decoder2x4_Sch.png)
+![Decoder2x4_Sch]( Decoder/images/Decoder2x4_Sch.png)
 
 Decoder_D2
-![Decoder_D2_Sch](/Lab2/Decoder/images/Decoder_D2_Sch.png)
+![Decoder_D2_Sch]( Decoder/images/Decoder_D2_Sch.png)
 
 ### D2 Testbench
-![Decoder_D2_TB](/Lab2/Decoder/images/Decoder_D2_TB.png)
+![Decoder_D2_TB]( Decoder/images/Decoder_D2_TB.png)
 ### D2 Exhaustive Logic Verification
-![Decoder_D2_Exhaustive](/Lab2/Decoder/images/Decoder_D2_Exhaustive.png)
+![Decoder_D2_Exhaustive]( Decoder/images/Decoder_D2_Exhaustive.png)
 ### D2 Worst Case Scenario for W0
 Test Vector1: 1010 -> 0000
 
 Delay: 110.7p
 
-![Decoder_D1_0001_0000](/Lab2/Decoder/images/Decoder_D2_1010_0000_delay.png)
+![Decoder_D1_0001_0000]( Decoder/images/Decoder_D2_1010_0000_delay.png)
 
 Test Vector2: 1100 -> 0000
 
 Delay: 113.6p
 
-![Decoder_D1_0000_1100_delay](/Lab2/Decoder/images/Decoder_D2_1100_0000_delay.png)
+![Decoder_D1_0000_1100_delay]( Decoder/images/Decoder_D2_1100_0000_delay.png)
 
 ## Simulation Result Analysis
 This discrepancy between our intuition and simulation results could be due to several factors. Let’s analyze the possible reasons.
@@ -279,7 +279,7 @@ This discrepancy between our intuition and simulation results could be due to se
 Test Vector1: 1010 -> 0000
 Delay: 102.4p
 
-![Decoder_D2_V2_1010_0000_delay](/Lab2/Decoder/images/Decoder_D2_V2_1010_0000_delay.png)
+![Decoder_D2_V2_1010_0000_delay]( Decoder/images/Decoder_D2_V2_1010_0000_delay.png)
 
 
 ## Conclusion
