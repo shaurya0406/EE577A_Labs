@@ -1,0 +1,15 @@
+radix 1 1 1 1 1 1 1 1 1
+io i i i i i i i i i 
+vname precharge_en A write_en decoder_en pre_en_SA read_en sense_en data data_bar
+tunit ns
+slope 0.01
+vih 1.0
+vil 0.0 
+
+
+; write - 1 operation
+0    1 0 0 0 1 1 0 1 0 ; Initial Condition, Everything is disabled, give data
+2    0 0 0 0 1 1 0 1 0 ; Precharge
+3    1 0 1 0 1 1 0 1 0 ; Precharge_deactivated, write_en is activated and pr_en is deactivated 
+4    1 0 1 1 1 1 0 1 0 ; DECODER_EN is activated(made zero because decoder is low active)
+6    0 0 0 0 1 1 0 1 0 ; end of write operation and precharge restarts

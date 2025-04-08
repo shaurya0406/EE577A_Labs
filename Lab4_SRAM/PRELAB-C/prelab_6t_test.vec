@@ -1,0 +1,21 @@
+radix 1 1 1 1 1
+io i i i i i
+vname WLE wl_out pr_ch read_write write_data
+; pos pos neg read1/write0 normal
+tunit ns
+slope 0.1
+vih 1.0
+vil 0.0
+0 0 0 1 1 0 ; initial state
+10 0 0 0 1 0 ; precharge bit lines
+20 1 1 1 0 1 ; write 1
+30 0 0 0 1 0 ; precharge bit lines
+40 1 1 1 1 0 ; read 1
+50 0 0 0 1 0 ; precharge bit lines
+60 1 1 1 0 0 ; write 0
+70 0 0 0 1 0 ; precharge bit lines
+80 1 1 1 1 0 ; read 0
+90 0 0 0 1 0 ; precharge bit lines
+100 1 1 1 0 1 ; write 1
+ 
+

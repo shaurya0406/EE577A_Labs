@@ -1,0 +1,14 @@
+radix 1 1 1 1 1 1 1 1 1
+io i i i i i i i i i 
+vname precharge_en A write_en decoder_en pre_en_SA read_en sense_en data data_bar
+tunit ns
+slope 0.01
+vih 1.0
+vil 0.0 
+
+;read - 1 operation
+0    1 0 0 0 1 1 0 1 0 ; Initial Condition, Everything is disabled
+1    0 0 0 0 0 1 0 1 0 ; precharge  and SA Precharge activated
+2    1 0 0 1 1 0 0 1 0; read phase starts, DECODER_EN and read_en is activated, SA_precharge_en is deactivated 
+3    0 0 0 0 0 1 1 1 0 ; sense_en is activated, decoder and read_en is deactivated
+
