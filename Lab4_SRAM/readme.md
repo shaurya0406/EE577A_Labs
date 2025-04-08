@@ -292,6 +292,22 @@ vil 0.0
 ![SRAM_1bit_TB_Write1_Sch](images/SRAM_512_TB_Sch.png)
 ![SRAM_512_TB_Graph](images/SRAM_512_TB_Graph.png)
 
+### Timing Summary Table
+
+| Parameter                                | Value     | Description                                                                         |
+|------------------------------------------|-----------|-------------------------------------------------------------------------------------|
+| **Clock Period**                         | 1 ns      | Clock period as defined in the vector file.                                         |
+| **Write Operation Delays**               |           |                                                                                     |
+| Precharge Time                           | 428.7 ps  | Time for bit lines to precharge (reach approximately 0.95 V) before write operations.|
+| Decoder Delay                            | 27.87 ps  | Delay from word-line enable (WL activation) until the decoder output activates.     |
+| WL-to-Q Flip Delay                       | 82.39 ps  | Delay from WL activation to the cell’s storage node (Q) switching state.             |
+| **Total Write Delay**                    | 110.26 ps | Sum of Decoder Delay and WL-to-Q Flip Delay.                                        |
+| **Read Operation Delays**                |           |                                                                                     |
+| Bitline Discharge Delay                  | 61.16 ps  | Delay from read_en activation to when the bit line falls to 0.9 V.                   |
+| Sense Amplifier Delay                    | 85.37 ps  | Delay from sense_en activation to the SA output latching the sensed value.           |
+| **Total Read Delay**                     | 146.53 ps | Sum of Bitline Discharge Delay and Sense Amplifier Delay.                           |
+
+---
 
 ```
   ; // New Vector File with 16-bit Data Buses (Radix 4444 for data)
@@ -419,3 +435,4 @@ vil 0.0
 53.5  0 81 70 0 0 0 1 1 19D7 E628    ; Seq 5 Read (2nd): Sense_en activated
 ```
 ---
+
