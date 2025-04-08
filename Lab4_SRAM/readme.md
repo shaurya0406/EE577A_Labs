@@ -428,11 +428,6 @@ vil 0.0
 50    0 F1 00 0 0 0 1 0 5F2B A0D4    ; Seq 5 Read (2nd): Precharge & SA Precharge activated
 51    1 F1 00 0 1 1 0 0 5F2B A0D4    ; Seq 5 Read (2nd): Read phase starts
 51.5  0 F1 00 0 0 0 1 1 5F2B A0D4    ; Seq 5 Read (2nd): Sense_en activated
-
-;--- Read Block for Sequence 8 (2nd occurrence, A = 81, A_bar = 70, Data = 19D7, data_bar = E628) ---
-52    0 81 70 0 0 0 1 0 19D7 E628    ; Seq 5 Read (2nd): Precharge & SA Precharge activated
-53    1 81 70 0 1 1 0 0 19D7 E628    ; Seq 5 Read (2nd): Read phase starts
-53.5  0 81 70 0 0 0 1 1 19D7 E628    ; Seq 5 Read (2nd): Sense_en activated
 ```
 ---
 
