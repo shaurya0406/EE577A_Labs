@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Introduction
+<!-- ## 1. Introduction
 
 In this lab, we designed and verified a 512‑bit SRAM array that employs four banks (each 8×16) with interleaved 16‑bit word storage. The design extends a provided 6‑T SRAM cell by optimizing transistor sizing for enhanced stability and performance. The peripheral circuitry – comprising the row decoder, precharge network, sense amplifier (SA), column multiplexers, and output registers – was designed and simulated to validate functionality and meet timing requirements. This report documents the detailed design specifications, simulation results, and critical timing analyses.
 
@@ -58,7 +58,7 @@ In this lab, we designed and verified a 512‑bit SRAM array that employs four b
 - **Top-Level Integration:**  
   The overall 512‑bit SRAM integrates four such banks, with interleaved data storage across banks. A column multiplexer (MUX) and output registers are used to reassemble the 16‑bit words. Figures in the submitted file set provide detailed layouts of the bank schematic as well as the 512‑bit top-level schematic. -->
 
----
+<!-- ---
 
 ## 3. SNM Characterization
 
@@ -429,5 +429,391 @@ vil 0.0
 51    1 F1 00 0 1 1 0 0 5F2B A0D4    ; Seq 5 Read (2nd): Read phase starts
 51.5  0 F1 00 0 0 0 1 1 5F2B A0D4    ; Seq 5 Read (2nd): Sense_en activated
 ```
+--- -->
+
+## Layout
+
+### SRAM 1bit
+![Layout_SRAM1bit_sch](images/layout/Layout_SRAM1bit_sch.png)
+![Layout_SRAM1bit_drc](images/layout/Layout_SRAM1bit_drc.png)
+![Layout_SRAM1bit_lvs](images/layout/Layout_SRAM1bit_lvs.png)
+
+### PreCharge 1bit
+#### Note: DRC Soft error due to missing nwell will be fixed in the top level SRAM Bank layout
+![Layout_PreCharge1bit_sch](images/layout/Layout_PreCharge1bit_sch.png)
+![Layout_PreCharge1bit_drc](images/layout/Layout_PreCharge1bit_drc.png)
+![Layout_PreCharge1bit_lvs](images/layout/Layout_PreCharge1bit_lvs.png)
+
+### ColumnMux 1bit
+![Layout_ColMux1bit_sch](images/layout/Layout_ColMux1bit_sch.png)
+![Layout_ColMux1bit_drc](images/layout/Layout_ColMux1bit_drc.png)
+![Layout_ColMux1bit_lvs](images/layout/Layout_ColMux1bit_lvs.png)
+
+### PowerStripe Cell
+![Layout_PowerStripe](images/layout//Layout_PowerStripe.png)
+
+## SRAM Bank Layout (SKILL Script Output)
+### Skill Script
+This skill script is designed for **Cadence Virtuoso** and automates the generation of an SRAM layout by placing different types of cells (SRAM bitcells, precharge cells, column muxes) in a structured array. Here's a breakdown and explanation of the key components of the script:
+
 ---
+
+### **Initialization and Parameters**
+These are the physical layout parameters and cell names defined for use throughout the script:
+
+```lisp
+; SRAM cell parameters
+cellOverlapVerticalP = 0.24
+cellOverlapVerticalG = 0.14
+cellOverlapHori = 0
+cellHeight = 1.98
+cellWidth = 1.12
+boundarytoTop = cellOverlapVerticalP/2
+boundarytoLeft = cellOverlapHori/2
+```
+These define overlaps and sizes to avoid DRC violations and ensure proper spacing during cell placement.
+
+```lisp
+; Other cell dimensions
+PWRSTRIPE_cellwidth = 0.52
+pre_cellHeight = 0.91
+WE_cellWidth = 0
+Mux_cellHeight = 1.405
+```
+
+```lisp
+; Cell names and library
+lib_name = "PRELAB-C"
+working_cell = "SRAM_Pre_Mux_v2"
+PWRSTRIPE_cell = "PowerStripe"
+SRAM_cell = "SRAM_1bit"
+PRE_cell = "PreCharge_1bit"
+WE_cell = "AND2"
+ColMux_Cell = "ColumnMux_1bit"
+```
+
+---
+
+### **`genSRAMArray` Procedure**
+```lisp
+procedure(genSRAMArray(row, column)
+```
+This is the main procedure that generates the SRAM array. You pass the number of rows and columns to it.
+
+- It opens the **schematic and layout views** of the working SRAM cell.
+- Calls `placeComponentArray` multiple times to:
+  - Place **SRAM cells**
+  - Place **Precharge cells**
+  - (Commented out) Wordline enable cells
+  - Place **MUX cells**
+
+Placement locations are determined relative to the origin, using `boundarytoTop` and the cell heights.
+
+---
+
+### **`placeComponentArray` Procedure**
+```lisp
+procedure(placeComponentArray(row, column, x_index, y_index, component_name, PWRSTRIPE_cell, pwr)
+```
+This handles the core cell placement logic.
+
+- It loops over rows and columns to place the given component (`component_name`) in an array.
+- Alternates vertical overlap between `cellOverlapVerticalP` and `cellOverlapVerticalG` based on even or odd row (`isEvenRow`).
+- Uses `cellCreate()` (presumably a user-defined function in `myFunctions.il`) to instantiate cells.
+- Tracks bounding box (`bBox`) to determine where the next cell should be placed.
+- Optionally places **PowerStripe** cells at the end of each row if `pwr == 1`.
+
+### Full SKILL Script
+```lisp
+load("/home/viterbi/04/shauryac/work_gpdk045/SCRIPTS/myFunctions.il") ;<--your path
+
+; basic dimensions of the SRAM cell 
+cellOverlapVerticalP = 0.24
+cellOverlapVerticalG = 0.14
+cellOverlapHori = 0
+cellHeight = 1.98
+cellWidth = 1.12
+boundarytoTop = cellOverlapVerticalP/2
+boundarytoLeft = cellOverlapHori/2
+
+; Power stripe cell dimension
+PWRSTRIPE_cellwidth = 0.52
+
+; Precharge cell dimension
+pre_cellHeight = 0.91
+
+; Wordline Enable cell dimension
+WE_cellWidth = 0
+
+; Mux cell dimention
+Mux_cellHeight = 1.405
+
+; initialize lib name, working cell name, and cell components names
+lib_name = "PRELAB-C"                   ; the library name for which includes all your memory cell components
+working_cell = "SRAM_Pre_Mux_v2"        ; the cell name for which you are currently working on
+PWRSTRIPE_cell = "PowerStripe"          ; the cell name for the power stripe
+SRAM_cell = "SRAM_1bit"                 ; the cell name for your SRAM bit cell
+PRE_cell = "PreCharge_1bit"             ; the cell name for your precharge circuit
+WE_cell = "AND2"                        ; the cell name for your wordline enable circuit
+ColMux_Cell = "ColumnMux_1bit"          ; the cell name for your column mux
+
+
+procedure(genSRAMArray(row, column)
+    cell = working_cell
+    lib = lib_name
+
+    cvSch=dbOpenCellViewByType(lib cell "schematic" "schematic" "r")
+    ; cvLay=lxGenFromSource(cvSch ?layViewName "layout" ?extractAfterGenerateAll t ?initCreateBoundary nil )
+    cvLay=dbOpenCellViewByType(lib cell "layout" "maskLayout" "a")
+    
+    geOpen(?lib lib ?cell cell ?view "layout" ?mode "a")
+    deInstallApp(getCurrentWindow() "Virtuoso XL")
+
+    ; Place SRAM cells
+    placeComponentArray(row, column, 0, -boundarytoTop, SRAM_cell, PWRSTRIPE_cell, 1)
+
+    ; Place Precharge cells
+    placeComponentArray(1, column, 0, pre_cellHeight - cellOverlapVerticalP , PRE_cell, PWRSTRIPE_cell, 0)
+
+    ; Dont Place WE cells
+    ;placeComponentArray(row, 1, - WE_cellWidth, -boundarytoTop, WE_cell, PWRSTRIPE_cell, 0)
+
+    ; Place MUX cells
+    placeComponentArray(1, column, 0, -cellHeight*row-boundarytoTop, ColMux_Cell, PWRSTRIPE_cell, 0)
+)
+
+procedure(placeComponentArray(row, column, x_index, y_index, component_name, PWRSTRIPE_cell, pwr)
+    oldRight = x_index
+    oldBottom = y_index
+    count = 0
+    rowCount = 0
+    colCount = 0
+    for(i 1 row
+        oldRight = x_index - boundarytoLeft
+        isEvenRow = mod(rowCount 2)
+        for(j 1 column
+            if((isEvenRow ==0) cellCreate(component_name, oldRight - cellOverlapHori, oldBottom + cellOverlapVerticalP, 0, 0))
+            if((isEvenRow ==1) cellCreate(component_name, oldRight - cellOverlapHori, oldBottom + cellOverlapVerticalG, 0, 1))
+
+            oldRight =  car(cadr(cellInst~>bBox))
+            count = count + 1
+            colCount = colCount + 1
+        )
+        rowCount = rowCount + 1
+        if(((isEvenRow == 0) && (pwr == 1)) cellCreate("PowerStripe", oldRight - cellOverlapHori, oldBottom + cellOverlapVerticalP, 0, 0))
+        if(((isEvenRow == 1) && (pwr == 1)) cellCreate("PowerStripe", oldRight - cellOverlapHori, oldBottom + cellOverlapVerticalG, 0, 1))
+        oldBottom = cadr(car(cellInst~>bBox))
+    )
+    
+    lxUpdateBinding(cvLay ?schCV cvSch)
+)
+```
+### Skill Script Output
+
+![Layout_ColMux1bit_sch](images/layout/Layout_SRAMBankSkill_sch.png)
+![Layout_ColMux1bit_drc](images/layout/Layout_SRAMBankSkill_drc.png)
+![Layout_ColMux1bit_lvs](images/layout/Layout_SRAMBankSkill_lvs.png)
+
+## *Peripheral Circuitry*
+
+### Column Decoder (2to4)
+![Layout_ColDecoder_sch](images/layout/Layout_ColDecoder_sch.png)
+![Layout_ColDecoder_drc](images/layout/Layout_ColDecoder_drc.png)
+![Layout_ColDecoder_lvs](images/layout/Layout_ColDecoder_lvs.png)
+
+### Row Decoder (3to8)
+![Layout_RowDecoder_sch](images/layout/Layout_RowDecoder_sch.png)
+![Layout_RowDecoder_drc](images/layout/Layout_RowDecoder_drc.png)
+![Layout_RowDecoder_lvs](images/layout/Layout_RowDecoder_lvs.png)
+
+### Write Driver
+![Layout_WriteDriver_sch](images/layout/Layout_WriteDriver_sch.png)
+![Layout_WriteDriver_drc](images/layout/Layout_WriteDriver_drc.png)
+![Layout_WriteDriver_lvs](images/layout/Layout_WriteDriver_lvs.png)
+
+### Sense Amplifier with NAND Latch & Output Register (DFF)
+![Layout_SenseAmp_sch](images/layout/Layout_SenseAmp_sch.png)
+![Layout_SenseAmp_drc](images/layout/Layout_SenseAmp_drc.png)
+![Layout_SenseAmp_lvs](images/layout/Layout_SenseAmp_lvs.png)
+
+### Address Register 1bit (DFF)
+![Layout_DFF_sch](images/layout/Layout_DFF_sch.png)
+---
+
+### SRAM Bank with Column Decoder
+#### *This is extracted and made into a symbol to be used in TB*
+
+![Layout_SRAMBank_ColDecoder_symbol](images/layout/Layout_SRAMBank_ColDecoder_symbol.png)
+![Layout_SRAMBank_ColDecoder_sch](images/layout/Layout_SRAMBank_ColDecoder_sch.png)
+![Layout_SRAMBank_ColDecoder_drc](images/layout/Layout_SRAMBank_ColDecoder_drc.png)
+![Layout_SRAMBank_ColDecoder_lvs](images/layout/Layout_SRAMBank_ColDecoder_lvs.png)
+
+## SRAM Bank TB
+#### *The extracted views are selected in the testbench config file and then this config view is selected in the maestro*
+![Layout_SRAMBank_TB_sch](images/layout/Layout_SRAMBank_TB_sch.png)
+![Layout_SRAMBank_TB_config](images/layout/Layout_SRAMBank_TB_config.png)
+![Layout_SRAMBank_TB_maestro](images/layout/Layout_SRAMBank_TB_maestro.png)
+
+### SRAM Bank Vector File
+
+```lisp
+; // Vector File for SRAM Bank Layout with 4-bit Data Bus (Radix 4 for data)
+
+radix 1 41 41 1 1 1 1 1 4 4
+io    i ii ii i i i i i i i
+vname precharge_en A<[4:0]> A_bar<[4:0]> write_en decoder_en pre_en_SA read_en sense_en data<[3:0]> data_bar<[3:0]>
+tunit ns
+slope 0.01
+vih 1.0
+vil 0.0
+
+; //=====================================================================
+; // WRITE MSB OPERATIONS (Order: 5, 6, 7, 8, 9, 0, 1, 2, 3, 4)
+; //=====================================================================
+
+;--- Sequence 5: A = F1, A_bar = 00, MSB of Data = 5F2B, data_bar = A0D4 ---
+0    1 F1 00 0 0 1 1 0 5 A    ; Seq 5 Write: Initial Condition, Everything disabled
+2    0 F1 00 0 0 1 1 0 5 A    ; Seq 5 Write: Precharge and Present Address & Data
+3    1 F1 00 1 0 1 1 0 5 A    ; Seq 5 Write: Write Enable activated (precharge deactivated)
+4    1 F1 00 1 1 1 1 0 5 A    ; Seq 5 Write: DECODER_EN activated
+
+;--- Sequence 6: A = A0, A_bar = 51, MSB of Data = 9054, data_bar = 6FAB ---
+5    0 A0 51 0 0 1 1 0 9 6    ; Seq 6 Write: Precharge and Present Address & Data
+6    1 A0 51 1 0 1 1 0 9 6    ; Seq 6 Write: Write Enable activated
+7    1 A0 51 1 1 1 1 0 9 6    ; Seq 6 Write: DECODER_EN activated
+
+;--- Sequence 7: A = 31, A_bar = C0, MSB of Data = FF83, data_bar = 007C ---
+8    0 31 C0 0 0 1 1 0 F 0    ; Seq 7 Write: Precharge and Present Address & MSB of Data
+9    1 31 C0 1 0 1 1 0 F 0    ; Seq 7 Write: Write Enable activated
+10   1 31 C0 1 1 1 1 0 F 0    ; Seq 7 Write: DECODER_EN activated
+
+;--- Sequence 8: A = 81, A_bar = 70, MSB of Data = 19D7, data_bar = E628 ---
+11   0 81 70 0 0 1 1 0 1 E    ; Seq 8 Write: Precharge and Present Address & MSB of Data
+12   1 81 70 1 0 1 1 0 1 E    ; Seq 8 Write: Write Enable activated
+13   1 81 70 1 1 1 1 0 1 E    ; Seq 8 Write: DECODER_EN activated
+
+;--- Sequence 9: A = D1, A_bar = 20, MSB of Data = 1A2B, data_bar = E5D4 ---
+14   0 D1 20 0 0 1 1 0 1 E    ; Seq 9 Write: Precharge and Present Address & MSB of Data
+15   1 D1 20 1 0 1 1 0 1 E    ; Seq 9 Write: Write Enable activated
+16   1 D1 20 1 1 1 1 0 1 E    ; Seq 9 Write: DECODER_EN activated
+
+;--- Sequence 0: A = 51, A_bar = A0, MSB of Data = 143B, data_bar = EBC4 ---
+17   0 51 A0 0 0 1 1 0 1 E    ; Seq 0 Write: Precharge and Present Address & MSB of Data
+18   1 51 A0 1 0 1 1 0 1 E    ; Seq 0 Write: Write Enable activated
+19   1 51 A0 1 1 1 1 0 1 E    ; Seq 0 Write: DECODER_EN activated
+
+;--- Sequence 1: A = 50, A_bar = A1, MSB of Data = 984C, data_bar = 67B3 ---
+20   0 50 A1 0 0 1 1 0 9 6    ; Seq 1 Write: Precharge and Present Address & MSB of Data
+21   1 50 A1 1 0 1 1 0 9 6    ; Seq 1 Write: Write Enable activated
+22   1 50 A1 1 1 1 1 0 9 6    ; Seq 1 Write: DECODER_EN activated
+
+;--- Sequence 2: A = B0, A_bar = 41, MSB of Data = 211B, data_bar = DEE4 ---
+23   0 B0 41 0 0 1 1 0 2 D    ; Seq 2 Write: Precharge and Present Address & MSB of Data
+24   1 B0 41 1 0 1 1 0 2 D    ; Seq 2 Write: Write Enable activated
+25   1 B0 41 1 1 1 1 0 2 D    ; Seq 2 Write: DECODER_EN activated
+
+;--- Sequence 3: A = 50, A_bar = A1, MSB of Data = 4C36, data_bar = B3C9 ---
+26   0 50 A1 0 0 1 1 0 4 B    ; Seq 3 Write: Precharge and Present Address & MSB of Data
+27   1 50 A1 1 0 1 1 0 4 B    ; Seq 3 Write: Write Enable activated
+28   1 50 A1 1 1 1 1 0 4 B    ; Seq 3 Write: DECODER_EN activated
+
+;--- Sequence 4: A = 91, A_bar = 60, MSB of Data = E15C, data_bar = 1EA3 ---
+29  0 91 60 0 0 1 1 0 E 1    ; Seq 4 Write: Precharge and Present Address & MSB of Data
+30  1 91 60 1 0 1 1 0 E 1    ; Seq 4 Write: Write Enable activated
+31  1 91 60 1 1 1 1 0 E 1    ; Seq 4 Write: DECODER_EN activated
+
+; //=====================================================================
+; // READ MSB OPERATIONS (Faster READ, Order: 5, 3, 2, 7, 9, 3, 4, 1, 8, 5)
+; //=====================================================================
+
+;--- Read Block for Sequence 5 (A = F1, A_bar = 00, MSB of Data = 5F2B, data_bar = A0D4) ---
+32    0 F1 00 0 0 0 1 0 5 A    ; Seq 5 Read: Precharge & SA Precharge activated
+33    1 F1 00 0 1 1 0 0 5 A    ; Seq 5 Read: Read phase starts
+33.5  0 F1 00 0 0 0 1 1 5 A    ; Seq 5 Read: Sense_en activated
+
+;--- Read Block for Sequence 3 (A = 50, A_bar = A1, MSB of Data = 4C36, data_bar = B3C9) ---
+34    0 50 A1 0 0 0 1 0 4 B    ; Seq 3 Read: Precharge & SA Precharge activated
+35    1 50 A1 0 1 1 0 0 4 B    ; Seq 3 Read: Read phase starts
+35.5  0 50 A1 0 0 0 1 1 4 B    ; Seq 3 Read: Sense_en activated
+
+;--- Read Block for Sequence 2 (A = B0, A_bar = 41, MSB of Data = 211B, data_bar = DEE4) ---
+36    0 B0 41 0 0 0 1 0 2 D    ; Seq 2 Read: Precharge & SA Precharge activated
+37    1 B0 41 0 1 1 0 0 2 D    ; Seq 2 Read: Read phase starts
+37.5  0 B0 41 0 0 0 1 1 2 D    ; Seq 2 Read: Sense_en activated
+
+;--- Read Block for Sequence 7 (A = 31, A_bar = C0, MSB of Data = FF83, data_bar = 007C) ---
+38    0 31 C0 0 0 0 1 0 F 0    ; Seq 7 Read: Precharge & SA Precharge activated
+39    1 31 C0 0 1 1 0 0 F 0    ; Seq 7 Read: Read phase starts
+39.5  0 31 C0 0 0 0 1 1 F 0    ; Seq 7 Read: Sense_en activated
+
+;--- Read Block for Sequence 9 (A = D1, A_bar = 20, MSB of Data = 1A2B, data_bar = E5D4) ---
+40    0 D1 20 0 0 0 1 0 1 E    ; Seq 9 Read: Precharge & SA Precharge activated
+41    1 D1 20 0 1 1 0 0 1 E    ; Seq 9 Read: Read phase starts
+41.5  0 D1 20 0 0 0 1 1 1 E    ; Seq 9 Read: Sense_en activated
+
+;--- Read Block for Sequence 3 (2nd occurrence, A = 50, A_bar = A1, MSB of Data = 4C36, data_bar = B3C9) ---
+42    0 50 A1 0 0 0 1 0 4 B    ; Seq 3 Read (2nd): Precharge & SA Precharge activated
+43    1 50 A1 0 1 1 0 0 4 B    ; Seq 3 Read (2nd): Read phase starts
+43.5  0 50 A1 0 0 0 1 1 4 B    ; Seq 3 Read (2nd): Sense_en activated
+
+;--- Read Block for Sequence 4 (A = 91, A_bar = 60, MSB of Data = E15C, data_bar = 1EA3) ---
+44    0 91 60 0 0 0 1 0 E 1    ; Seq 4 Read: Precharge & SA Precharge activated
+45    1 91 60 0 1 1 0 0 E 1    ; Seq 4 Read: Read phase starts
+45.5  0 91 60 0 0 0 1 1 E 1    ; Seq 4 Read: Sense_en activated
+
+;--- Read Block for Sequence 1 (A = 50, A_bar = A1, MSB of Data = 984C, data_bar = 67B3) ---
+46    0 50 A1 0 0 0 1 0 9 6    ; Seq 1 Read: Precharge & SA Precharge activated
+47    1 50 A1 0 1 1 0 0 9 6    ; Seq 1 Read: Read phase starts
+47.5  0 50 A1 0 0 0 1 1 9 6    ; Seq 1 Read: Sense_en activated
+
+;--- Read Block for Sequence 8 (A = 81, A_bar = 70, MSB of Data = 19D7, data_bar = E628) ---
+48    0 81 70 0 0 0 1 0 1 E    ; Seq 8 Read: Precharge & SA Precharge activated
+49    1 81 70 0 1 1 0 0 1 E    ; Seq 8 Read: Read phase starts
+49.5  0 81 70 0 0 0 1 1 1 E    ; Seq 8 Read: Sense_en activated
+
+;--- Read Block for Sequence 5 (2nd occurrence, A = F1, A_bar = 00, MSB of Data = 5F2B, data_bar = A0D4) ---
+50    0 F1 00 0 0 0 1 0 5 A    ; Seq 5 Read (2nd): Precharge & SA Precharge activated
+51    1 F1 00 0 1 1 0 0 5 A    ; Seq 5 Read (2nd): Read phase starts
+51.5  0 F1 00 0 0 0 1 1 5 A    ; Seq 5 Read (2nd): Sense_en activated
+```
+### Simulation Output
+#### Functionality Verified
+#### *Note: Signal name <DATA_OUT_HEX> is the output of the Flip Flop*
+![Layout_SRAMBank_TB_graph](images/layout/Layout_SRAMBank_TB_graph.png)
+
+## SRAM Bank Layout Datasheet
+
+## 1GHz Clk Frequency
+
+| **Parameter**                          | **Value**       | **Description**                                                                 |
+|----------------------------------------|-----------------|---------------------------------------------------------------------------------|
+| **Clock Period**                       | 1 ns            | Clock period as defined in Maestro                                              |
+
+### Write Operation Delays
+
+| Parameter                              | Value           | Description                                                                     |
+|----------------------------------------|-----------------|---------------------------------------------------------------------------------|
+| Precharge Time                         | 428.7 ps        | Time for bit lines to precharge (≈0.95 V) before write operations.              |
+| Decoder Delay                          | 27.87 ps        | Delay from WL enable to decoder output activation.                              |
+| WL-to-Q Flip Delay                     | 82.39 ps        | Delay from WL activation to the cell’s internal node (Q) switching.             |
+| **Total Write Delay**                  | 110.26 ps       | Sum of Decoder Delay and WL-to-Q Flip Delay.                                    |
+
+### Read Operation Delays
+
+| Parameter                              | Value           | Description                                                                     |
+|----------------------------------------|-----------------|---------------------------------------------------------------------------------|
+| Bitline Discharge Delay                | 61.16 ps        | Time from `read_en` activation until the bitline discharges to 0.9 V.           |
+| Sense Amplifier Delay                  | 85.37 ps        | Delay from `sense_en` to SA output latching the sensed value.                   |
+| **Total Read Delay**                   | 146.53 ps       | Sum of Bitline Discharge Delay and Sense Amplifier Delay.                       |
+
+### Area & Energy Metrics
+
+| Parameter                              | Value           | Description                                                                     |
+|----------------------------------------|-----------------|---------------------------------------------------------------------------------|
+| **SRAM Bank Area**                     | 592.9584 µm²    | Total physical area of the SRAM array.                                          |
+| **Clock Frequency**                    | 1 GHz           | Operating frequency of the SRAM.                                                |
+| **Average Read Energy**                | 307.178 µJ      | Average energy consumed per read operation.                                     |
+| **Average Write Energy**               | 59.145 µJ       | Average energy consumed per write operation.                                    |
+| **Average Leakage Energy**             | 206.631 µJ      | Static leakage energy consumed when idle.                                       |
+
 
