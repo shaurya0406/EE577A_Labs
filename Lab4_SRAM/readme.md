@@ -5,7 +5,7 @@
 
 ---
 
-<!-- ## 1. Introduction
+## 1. Introduction
 
 In this lab, we designed and verified a 512‑bit SRAM array that employs four banks (each 8×16) with interleaved 16‑bit word storage. The design extends a provided 6‑T SRAM cell by optimizing transistor sizing for enhanced stability and performance. The peripheral circuitry – comprising the row decoder, precharge network, sense amplifier (SA), column multiplexers, and output registers – was designed and simulated to validate functionality and meet timing requirements. This report documents the detailed design specifications, simulation results, and critical timing analyses.
 
@@ -53,12 +53,11 @@ In this lab, we designed and verified a 512‑bit SRAM array that employs four b
 - **Top-Level Schematic for 512-bit**  
 ![SRAM_512_TB_Sch](images/SRAM_512_TB_Sch.png)
 
-<!-- - **Bank TB Schematic (8×16):**  
+**Bank TB Schematic (8×16):**  
   Each bank consists of 8 rows and 16 columns. The bank-level schematic shows precharge circuits, the word line decoder, and the interconnection to the peripheral sense amplifier circuitry.
 - **Top-Level Integration:**  
-  The overall 512‑bit SRAM integrates four such banks, with interleaved data storage across banks. A column multiplexer (MUX) and output registers are used to reassemble the 16‑bit words. Figures in the submitted file set provide detailed layouts of the bank schematic as well as the 512‑bit top-level schematic. -->
+  The overall 512‑bit SRAM integrates four such banks, with interleaved data storage across banks. A column multiplexer (MUX) and output registers are used to reassemble the 16‑bit words. Figures in the submitted file set provide detailed layouts of the bank schematic as well as the 512‑bit top-level schematic.
 
-<!-- ---
 
 ## 3. SNM Characterization
 
@@ -429,7 +428,7 @@ vil 0.0
 51    1 F1 00 0 1 1 0 0 5F2B A0D4    ; Seq 5 Read (2nd): Read phase starts
 51.5  0 F1 00 0 0 0 1 1 5F2B A0D4    ; Seq 5 Read (2nd): Sense_en activated
 ```
---- -->
+---
 
 ## Layout
 
