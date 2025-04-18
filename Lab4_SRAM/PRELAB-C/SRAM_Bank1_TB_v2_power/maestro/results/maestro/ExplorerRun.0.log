@@ -1,0 +1,16 @@
+Starting Single Run, Sweeps and Corners...
+
+Current time: Thu Apr 17 19:43:12 2025 
+Best design point: 1
+Design specs: 
+	PRELAB-C_SRAM_Bank1_TB_1	corner	Nominal - 
+	AVG_WRITE_CURRENT		59.14u
+	AVG_READ_CURRENT		301.2u
+	AVG_LEAKAGE_CURRENT		206.6u
+Design parameters: 
+
+ExplorerRun.0
+Number of points completed: 1
+Number of simulation errors: 0
+ExplorerRun.0 completed. 
+Current time: Thu Apr 17 19:45:02 2025 

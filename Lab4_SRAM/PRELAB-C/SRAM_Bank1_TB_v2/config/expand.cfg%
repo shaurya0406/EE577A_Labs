@@ -1,0 +1,26 @@
+//Revision 7
+//NOTE
+// Default template for spectre
+// Note:
+//      Please remember to replace Top Cell Library, Cell, and View
+//      fields with the actual names used by your design.
+//END_NOTE
+
+config SRAM_Bank1_TB_v2;
+design \PRELAB-C .SRAM_Bank1_TB_v2:schematic;
+liblist \PRELAB-C , analogLib, basic, gpdk045, gsclib045, gsclib045_tech;
+
+viewlist spectre, cmos_sch, \cmos.sch , schematic, veriloga, ahdl, pspice, dspf;
+stoplist spectre;
+
+
+cell \PRELAB-C .SRAM_Pre_Mux_Decoder binding :av_extracted;
+cell \PRELAB-C .SenseAmpLatch_1bit binding :av_extracted;
+cell \PRELAB-C .WriteDriver_1bit binding :av_extracted;
+cell \PRELAB-C .Decoder3to8 binding :av_extracted;
+
+cell gsclib045.AND2X1 binding :schematic;
+cell gsclib045.DFFQX1 binding :schematic;
+
+
+endconfig

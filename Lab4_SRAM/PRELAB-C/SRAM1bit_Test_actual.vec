@@ -1,0 +1,34 @@
+radix 1 1 1 1 1 1 1 1 1
+io i i i i i i i i i 
+vname precharge_en A write_en decoder_en pre_en_SA read_en sense_en data data_bar
+tunit ns
+slope 0.01
+vih 1.0
+vil 0.0 
+
+; write - 1 operation
+0    1 0 0 0 1 1 0 1 0 ; Initial Condition, Everything is disabled
+2    0 0 0 0 1 1 0 1 0 ; Precharge
+3    1 0 1 0 1 1 0 1 0 ; Precharge_deactivated, write_en is activated and pr_en is deactivated 
+4    1 0 1 1 1 1 0 1 0 ; DECODER_EN is activated(made zero because decoder is low active)
+6    0 0 0 0 1 1 0 1 0 ; end of write operation and precharge restarts
+
+;read - 1 operation
+7    1 0 0 0 1 1 0 1 0 ; Initial Condition, Everything is disabled
+8    0 0 0 0 0 1 0 1 0 ; precharge  and SA Precharge activated
+9    1 0 0 1 1 0 0 1 0 ; read phase starts, DECODER_EN and read_en is activated, SA_precharge_en is deactivated 
+9.1  0 0 0 0 0 1 1 1 0 ; sense_en is activated, decoder and read_en is deactivated
+9.2  0 0 0 0 1 1 0 1 0 ; Precharge
+
+; write - 0 operation
+12    0 0 0 0 1 1 0 0 1 ; Precharge
+13    1 0 1 0 1 1 0 0 1 ; Precharge_deactivated, write_en is activated and pr_en is deactivated 
+14    1 0 1 1 1 1 0 0 1 ; DECODER_EN is activated(made zero because decoder is low active)
+16    0 0 0 0 1 1 0 0 1 ; end of write operation and precharge restarts
+
+;read - 0 operation
+17    1 0 0 0 1 1 0 1 0 ; Initial Condition, Everything is disabled
+18    0 0 0 0 0 1 0 1 0 ; precharge  and SA Precharge activated
+19    1 0 0 1 1 0 0 1 0; read phase starts, DECODER_EN and read_en is activated, SA_precharge_en is deactivated 
+19.1  0 0 0 0 0 1 1 1 0 ; sense_en is activated, decoder and read_en is deactivated
+19.2  0 0 0 0 1 1 0 1 0 ; Precharge

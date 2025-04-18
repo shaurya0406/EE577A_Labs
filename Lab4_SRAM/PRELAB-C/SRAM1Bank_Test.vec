@@ -16,11 +16,11 @@ vil 0.0
 6    0 00 F1 0 0 1 1 0 5 A    ; End of write operation and precharge restarts
 
 ; read - 0101 at 00 operation (faster READ)
-7    1 00 F1 0 0 1 1 0 5 A    ; Initial Condition, Everything is disabled
+; 7    1 00 F1 0 0 1 1 0 5 A    ; Initial Condition, Everything is disabled
 8    0 00 F1 0 0 0 1 0 5 A    ; Precharge and SA Precharge activated
 9    1 00 F1 0 1 1 0 0 5 A    ; Read phase starts, DECODER_EN and read_en are activated, SA_precharge_en is deactivated 
-9.1  0 00 F1 0 0 0 1 1 5 A    ; Sense_en is activated, decoder and read_en are deactivated
-9.2  0 00 F1 0 0 1 1 0 5 A    ; Precharge 
+9.5  0 00 F1 0 0 1 1 1 5 A    ; Sense_en is activated, decoder and read_en are deactivated
+10   0 00 F1 0 0 1 1 0 5 A    ; Precharge 
 
 ; write - 1010 at 01 operation
 12   0 01 F0 0 0 1 1 0 A 5    ; Precharge
@@ -32,24 +32,16 @@ vil 0.0
 17   1 00 F1 0 0 1 1 0 A 5    ; Initial Condition, Everything is disabled
 18   0 00 F1 0 0 0 1 0 A 5    ; Precharge and SA Precharge activated
 19   1 00 F1 0 1 1 0 0 A 5    ; Read phase starts, DECODER_EN and read_en are activated, SA_precharge_en is deactivated 
-19.1 0 00 F1 0 0 0 1 1 A 5    ; Sense_en is activated, decoder and read_en are deactivated
-19.2 0 00 F1 0 0 1 1 0 A 5    ; Precharge 
+19.5 0 00 F1 0 0 0 1 1 A 5    ; Sense_en is activated, decoder and read_en are deactivated
+20   0 00 F1 0 0 1 1 0 A 5    ; Precharge 
 
 ; read - 1010 at 01 operation (faster READ)
 21   1 01 F0 0 0 1 1 0 A 5    ; Initial Condition, Everything is disabled
 22   0 01 F0 0 0 0 1 0 A 5    ; Precharge and SA Precharge activated
-23   1 01 F0 0 1 1 0 0 A 5    ; Read phase starts, DECODER_EN and read_en are activated, SA_precharge_en is deactivated 
-24   0 01 F0 0 0 0 1 1 A 5    ; Sense_en is activated, decoder and read_en are deactivated
-24.1 0 01 F0 0 0 0 1 1 A 5    ; Sense_en is activated, decoder and read_en are deactivated
-24.2 0 01 F0 0 0 1 1 0 A 5    ; Precharge 
+22.5 1 01 F0 0 1 1 0 0 A 5    ; Read phase starts, DECODER_EN and read_en are activated, SA_precharge_en is deactivated 
+23   0 01 F0 0 0 1 1 1 A 5    ; Sense_en is activated, decoder and read_en are deactivated
 
-;--------------------------------------------------------------
-; New operations for Address A[4:0] = 00011 
-; According to radix 41:
-;   A   = (0001)hex & (1)hex  => "11"
-;   A_bar (compliment of A) = (1110)hex & (0)hex  => "E1"  [per your specification]
-; Data to be written is D and its complement is 2.
-;--------------------------------------------------------------
+
 
 ; write - D at 11 operation
 25   1 11 E1 0 0 1 1 0 D 2    ; Initial Condition, Everything is disabled
@@ -62,6 +54,5 @@ vil 0.0
 30   1 11 E1 0 0 1 1 0 D 2    ; Initial Condition, Everything is disabled
 31   0 11 E1 0 0 0 1 0 D 2    ; Precharge and SA Precharge activated
 32   1 11 E1 0 1 1 0 0 D 2    ; Read phase starts, DECODER_EN and read_en are activated, SA_precharge_en is deactivated 
-33   0 11 E1 0 0 0 1 1 D 2    ; Sense_en is activated, decoder and read_en are deactivated
-33.1 0 11 E1 0 0 0 1 1 D 2    ; Sense_en is activated, decoder and read_en are deactivated
-33.2 0 11 E1 0 0 1 1 0 D 2    ; Precharge 
+32.5 0 11 E1 0 0 1 1 1 D 2    ; Sense_en is activated, decoder and read_en are deactivated
+33   0 11 E1 0 0 1 1 0 D 2    ; Precharge 

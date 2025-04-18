@@ -1,6 +1,6 @@
 Starting Single Run, Sweeps and Corners...
 
-Current time: Mon Apr  7 19:50:30 2025 
+Current time: Mon Apr 14 15:58:51 2025 
 Best design point: 1
 Design specs: 
 	PRELAB-C_SRAM_Bank1_TB_1	corner	Nominal - 
@@ -10,4 +10,4 @@ ExplorerRun.0
 Number of points completed: 1
 Number of simulation errors: 0
 ExplorerRun.0 completed. 
-Current time: Mon Apr  7 19:50:51 2025 
+Current time: Mon Apr 14 15:59:12 2025 

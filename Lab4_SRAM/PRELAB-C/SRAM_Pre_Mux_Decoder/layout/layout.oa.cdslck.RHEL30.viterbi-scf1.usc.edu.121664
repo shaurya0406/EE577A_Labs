@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      shauryac
+HostName                       viterbi-scf1.usc.edu
+ProcessIdentifier              121664
+ProcessCreationTime_UTC        1744859711
+ProcessCreationTime_Readable   Wed Apr 16 20:15:11 2025 PDT
+AppIdentifier                  OA File System Design Manager
+OSType                         unix
+ReasonForPlacingEditLock       OpenAccess edit lock
+FilePathUsedToEditLock         /home/viterbi/04/shauryac/work_gpdk045/PRELAB-C/SRAM_Pre_Mux_Decoder/layout/layout.oa.cdslck.dirlck
+TimeEditLocked                 Wed Apr 16 20:17:41 2025 PDT
