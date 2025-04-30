@@ -97,17 +97,9 @@ O_{i,1} \;=\; B'\,P_1 \;+\; P_1\,P_2 \;+\; A\,B' \;+\; A\,P_1
 }
 ```
 
-Below is a pure‐NAND/INV implementation of  
-\[
-O_{i,1} \;=\; B'\,P_{1}\;+\;P_{1}\,P_{2}\;+\;A\,B'\;+\;A\,P_{1}
-\]  
-using De Morgan’s law to turn the OR-of-products into a single NAND-of-NANDs.
+#### 1.  apply De Morgan
 
----
-
-### 1.  apply De Morgan
-
-\[
+```math
 \begin{aligned}
 O 
 &= T_{1}+T_{2}+T_{3}+T_{4}
@@ -124,43 +116,41 @@ T_{4}=A\,P_{1}.
 \quad\bigl[\,(X+Y+Z+W)'=X'\,Y'\,Z'\,W'\bigr]\\
 &=\;\text{NAND}\!\bigl(T_{1}',T_{2}',T_{3}',T_{4}'\bigr).
 \end{aligned}
-\]
+```
 
 And each \(T_i'\) is just a 2-input NAND:
 
-\[
+```math
 \begin{aligned}
 T_{1}' &= (B'\,P_{1})' = \mathrm{NAND}(B',\,P_{1})\\
 T_{2}' &= (P_{1}\,P_{2})' = \mathrm{NAND}(P_{1},\,P_{2})\\
 T_{3}' &= (A\,B')' = \mathrm{NAND}(A,\,B')\\
 T_{4}' &= (A\,P_{1})' = \mathrm{NAND}(A,\,P_{1}).
 \end{aligned}
-\]
+```
 
 ---
 
-### 2.  gate-level network
+#### 2.  gate-level network
 
 
 - **Step 1:** Invert \(B\) to get \(B'\) (1 × INV).  
 - **Step 2:** Build the four NANDs  
-  \[
+```math
     T_1'=\mathrm{NAND}(B',P_1),\;
     T_2'=\mathrm{NAND}(P_1,P_2),\;
     T_3'=\mathrm{NAND}(A,B'),\;
     T_4'=\mathrm{NAND}(A,P_1).
-  \]
+```
 - **Step 3:** Feed \(T_1'\), \(T_2'\), \(T_3'\), \(T_4'\) into a 4-input NAND  
-  <!-- \(\;O = \mathrm{NAND}(T_1',T_2',T_3',T_4')\),  
-  which by De Morgan is exactly the OR of the four original products.
 
 Using only 2-input NANDs, we can tree them:
 
-1. \(U = \mathrm{NAND}(T_1',T_2') = T_1 + T_2\).  
-2. \(V = \mathrm{NAND}(T_3',T_4') = T_3 + T_4\).  
-3. \(O = \mathrm{NAND}(U,V) = U + V = T_1+T_2+T_3+T_4.\)
-
-Either way, you end up with a pure NAND+INV realization of your SOP.
+```math
+1. (U = \mathrm{NAND}(T_1',T_2') = T_1 + T_2). \\
+2. (V = \mathrm{NAND}(T_3',T_4') = T_3 + T_4). \\
+3. (O = \mathrm{NAND}(U,V) = U + V = T_1+T_2+T_3+T_4). \\
+```
 
 
 ### 2. Oi,2
@@ -173,3 +163,45 @@ O_{i,2} = A'\,P_2 \;+\; P_1\,P_2 \;+\; A'\,B \;+\; B\,P_2
 }
 ```
 
+
+## Design 2
+
+### 1. Oi,1
+
+You can get a very compact two-term factorization if you allow an AOI (and a plain OR) in addition to your regular gates.  Starting from
+
+```math
+O_{i,1} \;=\; B'\,P_{1}\;+\;P_{1}\,P_{2}\;+\;A\,B'\;+\;A\,P_{1}
+```
+
+notice that the three terms containing \(P_{1}\) share a common OR:
+
+```math
+B' P_{1} \;+\;P_{1} P_{2}\;+\;A P_{1}
+\;=\;
+P_{1}\,\bigl(B' + P_{2} + A\bigr)
+```
+
+so the whole thing collapses to
+
+```math
+\boxed{
+O_{i,1}
+\;=\;
+A\,B'
+\;+\;
+P_{1}\,\bigl(A + B' + P_{2}\bigr)
+}
+```
+---
+
+### 2, Oi,2
+
+```math
+O_{i,2} \;=\; A'\,P_{2}\;+\;P_{1}\,P_{2}\;+\;A'\,B\;+\;B\,P_{2}
+```
+
+```math
+O_{i,2}
+= A'B \;+\; P_{2}\,(A' + B + P_{1})
+```

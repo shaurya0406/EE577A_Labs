@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stimuliremovedset>
+    <namedstimuli>
+        <stimuliname>Bin</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>Ain</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>C</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>P_in1</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>P_in2</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>Din</stimuliname>
+    </namedstimuli>
+    <namedstimuli>
+        <stimuliname>Cin</stimuliname>
+    </namedstimuli>
+</stimuliremovedset>
