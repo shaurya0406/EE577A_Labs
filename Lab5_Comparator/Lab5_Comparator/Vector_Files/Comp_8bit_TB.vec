@@ -1,0 +1,26 @@
+;==============================================================
+; 1-bit FCC Stage – Worst-Case Delay Vector File for Maestro
+; Inputs: A, B, Oin<2> (p), Oin<1> (q)
+; Outputs Oout<2:1> will follow p,q
+; All Oin<2:1> Combos with A=B=1
+;==============================================================
+
+radix 1 1
+io    i i
+vname A_in<0> B_in<0> 
+
+; time unit and signal levels
+tunit ns
+slope 0.01
+vih   1.0
+vil   0.0
+
+; sequence through p,q = 00 -> 01 -> 11 -> 10 -> 00
+1   0       0    ; p=0, q=0 -> Oout=00
+3   0       1    ; p=0, q=1 -> Oout=01
+5   1       1    ; p=1, q=1 -> Oout=11
+7   1       0    ; p=1, q=0 -> Oout=10
+9   0       1    ; p=0, q=1 -> Oout=01
+11  1       0    ; p=1, q=0 -> Oout=10
+
+
