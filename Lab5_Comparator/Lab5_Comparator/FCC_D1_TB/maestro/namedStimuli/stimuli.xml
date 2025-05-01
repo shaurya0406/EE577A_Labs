@@ -28,7 +28,7 @@
     </namedstimuli>
     <namedstimuli>
         <stimuliname>P_in2</stimuliname>
-        <timeStamp>28/04/2025;6:59:11:PM</timeStamp>
+        <timeStamp>30/04/2025;3:52:3:PM</timeStamp>
         <simStopTime>1n</simStopTime>
         <isourceResistorValue>1k</isourceResistorValue>
         <libname></libname>
@@ -71,11 +71,25 @@
                 <value>2n</value>
                 <defvalue></defvalue>
             </parameter>
+            <parameter>
+                <cdfname>tr</cdfname>
+                <prompt>Rise time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
+            <parameter>
+                <cdfname>tf</cdfname>
+                <prompt>Fall time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
         </parameterset>
     </namedstimuli>
     <namedstimuli>
         <stimuliname>P_in1</stimuliname>
-        <timeStamp>28/04/2025;6:59:18:PM</timeStamp>
+        <timeStamp>30/04/2025;3:51:56:PM</timeStamp>
         <simStopTime>1n</simStopTime>
         <isourceResistorValue>1k</isourceResistorValue>
         <libname></libname>
@@ -118,11 +132,25 @@
                 <value>4n</value>
                 <defvalue></defvalue>
             </parameter>
+            <parameter>
+                <cdfname>tr</cdfname>
+                <prompt>Rise time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
+            <parameter>
+                <cdfname>tf</cdfname>
+                <prompt>Fall time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
         </parameterset>
     </namedstimuli>
     <namedstimuli>
         <stimuliname>Ain</stimuliname>
-        <timeStamp>28/04/2025;7:0:18:PM</timeStamp>
+        <timeStamp>30/04/2025;3:51:39:PM</timeStamp>
         <simStopTime>1n</simStopTime>
         <isourceResistorValue>1k</isourceResistorValue>
         <libname></libname>
@@ -165,11 +193,25 @@
                 <value>16n</value>
                 <defvalue></defvalue>
             </parameter>
+            <parameter>
+                <cdfname>tr</cdfname>
+                <prompt>Rise time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
+            <parameter>
+                <cdfname>tf</cdfname>
+                <prompt>Fall time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
         </parameterset>
     </namedstimuli>
     <namedstimuli>
         <stimuliname>Bin</stimuliname>
-        <timeStamp>28/04/2025;6:59:51:PM</timeStamp>
+        <timeStamp>30/04/2025;3:51:47:PM</timeStamp>
         <simStopTime>1n</simStopTime>
         <isourceResistorValue>1k</isourceResistorValue>
         <libname></libname>
@@ -210,6 +252,20 @@
                 <prompt>Period</prompt>
                 <datatype>string</datatype>
                 <value>8n</value>
+                <defvalue></defvalue>
+            </parameter>
+            <parameter>
+                <cdfname>tr</cdfname>
+                <prompt>Rise time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
+                <defvalue></defvalue>
+            </parameter>
+            <parameter>
+                <cdfname>tf</cdfname>
+                <prompt>Fall time</prompt>
+                <datatype>string</datatype>
+                <value>5p</value>
                 <defvalue></defvalue>
             </parameter>
         </parameterset>
