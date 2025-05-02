@@ -1,34 +1,32 @@
 ;------------------------------------------------------------
-; create8BitComparator:
-;   Place HCC0 on the right and FCC1…FCC7 to its left,
+; createNBitComparator:
+;   Place HCC0 on the right and FCC1…FCCn to its left,
 ;   wire A/B stubs, and ripple-connect O_out→O_in.
 ;------------------------------------------------------------
-procedure( create8BitComparator( / cv libName symViewName
-                                 / hccName fccName origin dx stubLen
-                                 / prevInst inst pt instName cellName
-                                 / aTerm bTerm pA pB pAstub pBstub
-                                 / termPrev1 termCur1 termPrev2 termCur2
-                               )
+procedure( createNBitComparator(N)
   ;;————————————————————————————————————————————————————
-  ;; 1) Init
-  cv           = geGetEditCellView()           ; your active schematic
-  libName      = "Lab5_Comparator"                    ; <-- change to your library
-  symViewName  = "symbol"                      ; view name of HCC/FCC symbols
-  hccName      = "HCC_D3"    
-  fccName      = "FCC_D3"
-  origin       = list( 0:um  0:um )            ; lower‐right corner of HCC0
-  dx           = 5:um                          ; horizontal pitch between cells
-  stubLen      = 1:um                          ; length of A/B stubs
-  prevInst     = nil
-  ;; HCC_width = 1.6875
-  ;; HCC_height = 0.625
-  ;; FCC_width = 2.5
-  ;; FCC_height = 1.1875
+  ;; 1) Parameters: change these to suit your library/grid
+
+  libName     = "Lab5_Comparator"      ; your lib
+  cellName    = "Comp_8bit_skill_test" ; Target Cell Name (in which the schematic will be genrated)
+  symViewName = "symbol" 
+  hccName     = "HCC_D1"           
+  fccName     = "FCC_D3"
+  origin      = list(0 0)
+  dx          = 2.5
+  stubLen     = 1
+  prevInst    = nil
 
   ;;————————————————————————————————————————————————————
-  ;; 2) Loop over bits 0…7
+  ;; 2) Open Schematic and get the Top-Level Cellview
 
-  for( i 0 7
+  cv = dbOpenCellViewByType(libName cellName "schematic" "schematic" "a") 
+  geOpen(?lib libName ?cell cellName ?view "schematic" ?mode "a") 
+
+  ;;————————————————————————————————————————————————————
+  ;; 3) Loop over bits from 0 to N
+
+  for( i 0 N
     ;; decide cell & name
     if( i == 0 then
       cellName = hccName
@@ -41,18 +39,20 @@ procedure( create8BitComparator( / cv libName symViewName
     ;; compute placement point
     pt = list( car(origin) - i*dx  cadr(origin) )
 
-    ;; place the instance
-    inst = dbCreateInst( cv 
-                         libName       ; library
-                         cellName      ; cell master name
-                         symViewName   ; view (symbol)
-                         pt            ; placement point
-                         "R0"          ; orientation 
-                         instName      ; instance name
-                       )
+    ;; Open the Cell Symbol view
+	  Curr_Cell=dbOpenCellViewByType(libName cellName symViewName "schematicSymbol" "r")
+    ;; Place the symbol
+    inst = dbCreateInst(
+             cv
+             Curr_Cell
+             instName
+             pt
+             "R0"
+           )
 
     ;;————————————————————————————————————————————
-    ;; 3) Wire & label A<i>
+    ;; 4a) Wire & label A<i>
+
     aTerm   = dbFindTermByName( inst "A" )
     pA      = aTerm~>point                          ; pin location
     println(pA)
@@ -63,7 +63,7 @@ procedure( create8BitComparator( / cv libName symViewName
     
 
     ;;————————————————————————————————————————————
-    ;; 4) Wire & label B<i>
+    ;; 4b) Wire & label B<i>
     bTerm   = geGetInstTerminal( inst "B" )
     pB      = bTerm~>point
     pBstub  = list( car(pB)  cadr(pB) + stubLen )
@@ -71,7 +71,7 @@ procedure( create8BitComparator( / cv libName symViewName
     dbCreateLabel( cv (sprintf( nil "B<%d>" i )) pBstub )
 
     ;;————————————————————————————————————————————
-    ;; 5) Ripple‐connect previous cell’s O_out<*> → this cell’s O_in<*>
+    ;; 4c) Ripple‐connect previous cell’s O_out<*> → this cell’s O_in<*>
     when( prevInst
       ;; bit‐1
       termPrev1 = geGetInstTerminal( prevInst "O_out<1>" )
@@ -87,5 +87,5 @@ procedure( create8BitComparator( / cv libName symViewName
     prevInst = inst
   )
 
-  println("8‐bit comparator placed and wired!")
+  println("N‐bit comparator placed and wired!")
 )
