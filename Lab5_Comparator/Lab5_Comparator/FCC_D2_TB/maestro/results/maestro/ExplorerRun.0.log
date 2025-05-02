@@ -1,6 +1,6 @@
 Starting Single Run, Sweeps and Corners...
 
-Current time: Wed Apr 30 16:44:35 2025 
+Current time: Wed Apr 30 18:59:55 2025 
 Best design point: 1
 Design specs: 
 	Lab5_Comparator_FCC_D2_TB_1	corner	Nominal - 
@@ -8,6 +8,6 @@ Design parameters:
 
 ExplorerRun.0
 Number of points completed: 1
-Number of simulation errors: 1
+Number of simulation errors: 0
 ExplorerRun.0 completed. 
-Current time: Wed Apr 30 16:44:39 2025 
+Current time: Wed Apr 30 19:00:09 2025 

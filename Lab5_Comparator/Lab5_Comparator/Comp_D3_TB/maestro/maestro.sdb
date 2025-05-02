@@ -39,6 +39,42 @@
 					<output>Oout
 						<evalType>point</evalType>
 					</output>
+					<output>"/A&lt;0&gt;"
+						<evalType>point</evalType>
+					</output>
+					<output>"/B&lt;0&gt;"
+						<evalType>point</evalType>
+					</output>
+					<output>"/HCC0_Out&lt;1&gt;"
+						<evalType>point</evalType>
+					</output>
+					<output>/A&lt;0&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/B&lt;0&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/HCC0_Out&lt;1&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/FCC1_Out&lt;1&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>"/O_out&lt;1&gt;"
+						<evalType>point</evalType>
+					</output>
+					<output>/O_out&lt;1&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/HCC0_Out&lt;2&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/FCC1_Out&lt;2&gt;
+						<evalType>point</evalType>
+					</output>
+					<output>/O_out&lt;2&gt;
+						<evalType>point</evalType>
+					</output>
 				</outputs>
 			</test>
 		</tests>

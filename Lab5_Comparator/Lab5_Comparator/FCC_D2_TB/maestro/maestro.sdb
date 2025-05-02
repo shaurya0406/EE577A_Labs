@@ -29,6 +29,11 @@
 						<value>active</value>
 					</option>
 				</tooloptions>
+				<outputs>
+					<output>P_Out_Binary
+						<evalType>point</evalType>
+					</output>
+				</outputs>
 			</test>
 		</tests>
 		<extensions>
