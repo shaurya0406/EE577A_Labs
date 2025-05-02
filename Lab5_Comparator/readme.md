@@ -13,11 +13,12 @@ This repository contains files and documentation for **EE 577A Spring 2025**, 
 6. [Design Versions](#design-versions)
 7. [Simulation Setup](#simulation-setup)
 8. [Measurement & Delay Characterization](#measurement--delay-characterization)
-9. [Automatic Schematic Generation Using SKILL](#automatic-schematic-generation-using-skill)
-9. [Report Files](#report-files)
-10. [How to Run](#how-to-run)
-11. [Assumptions & Decisions](#assumptions--decisions)
-12. [References](#references)
+9. [Chain Delay Estimates](#chain-delay-estimates)
+10. [Automatic Schematic Generation Using SKILL](#automatic-schematic-generation-using-skill)
+11. [8‑bit Comparator](#8bit-comparator)
+12. [16‑bit Comparator](#16bit-comparator)
+13. [Result Analysis](#result-analysis)
+14. [Assumptions & Decisions](#assumptions--decisions)
 
 ---
 
@@ -34,17 +35,16 @@ Each version uses different logic styles (primitive gates, complex gates, transm
 
 ```
 LAB5_Comparator/
-├── hcc/                # Half‑Comparator schematic and testbenches
+├── HCC/                # Half‑Comparator schematic and testbenches
 │   ├── version1/       # INV/NAND/NOR only
 │   ├── version2/       # With complex gates
 │   └── ...
-├── fcc/                # Full‑Comparator schematic and testbenches
+├── FCC/                # Full‑Comparator schematic and testbenches
 │   ├── version1/
 │   └── ...
 ├── comparators/        # 8‑bit and 16‑bit top‑level schematics & TBs
-├── simulations/        # SPICE scripts, waveforms, load setups
-├── data/               # Extracted delay numbers, K‑maps, transistor counts
-├── report/             # Final PDF report and supplementary figures
+├── Vector_Files/       # Input Vectors for Worst Case Delay Calculation
+├── schgen.il/          # SKILL script for Automatic Schematic Generation
 └── README.md           # This file
 ```
 
@@ -210,7 +210,47 @@ In Design 2, we introduce complex complementary gates to reduce logic depth and
 ![HCC Design 2 Schematic](./images/HCC_D2_Sch.png)
 
 ### 2.2 Full-Comparator Cell (FCC) Schematic (Version 2)
+### 1. Oi,1
 
+You can get a very compact two-term factorization if you allow an AOI (and a plain OR) in addition to your regular gates.  Starting from
+
+```math
+O_{i,1} \;=\; B'\,P_{1}\;+\;P_{1}\,P_{2}\;+\;A\,B'\;+\;A\,P_{1}
+```
+
+notice that the three terms containing \(P_{1}\) share a common OR:
+
+```math
+B' P_{1} \;+\;P_{1} P_{2}\;+\;A P_{1}
+\;=\;
+P_{1}\,\bigl(B' + P_{2} + A\bigr)
+```
+
+so the whole thing collapses to
+
+```math
+\boxed{
+O_{i,1}
+\;=\;
+A\,B'
+\;+\;
+P_{1}\,\bigl(A + B' + P_{2}\bigr)
+}
+```
+---
+
+### 2. Oi,2
+
+```math
+O_{i,2} \;=\; A'\,P_{2}\;+\;P_{1}\,P_{2}\;+\;A'\,B\;+\;B\,P_{2}
+```
+
+```math
+\boxed{
+O_{i,2}
+= A'B \;+\; P_{2}\,(A' + B + P_{1})
+}
+```
 ![FCC Design 2 Schematic](./images/FCC_D2_Sch.png)
 
 **Key Features of Design 2**
@@ -369,6 +409,17 @@ After extracting delays for each cell and version, we can compare the worst‑ca
 
 These versions will be used in constructing the final 8‑bit and 16‑bit comparator chains.
 
+## Chain Delay Estimates
+
+Using the selected best cells (HCC D1 and FCC D3), we can estimate the worst‑case O\_out delays for longer comparator chains by summing HCC delay + (number of FCC stages) × FCC delay.
+
+| Chain Length | O\_out<1> Estimate (ps)         | O\_out<2> Estimate (ps)         |
+| :----------: | :------------------------------ | :------------------------------ |
+|   **8‑bit**  | 72.10 + 7 × 20.39 = **214.83**  | 66.15 + 7 × 18.60 = **196.35**  |
+|  **16‑bit**  | 72.10 + 15 × 20.39 = **377.95** | 66.15 + 15 × 18.60 = **345.15** |
+
+These estimates will be validated via full‑chain simulation.
+
 ## Automatic Schematic Generation Using SKILL
 
 Instead of manually wiring each bit cell, you can automate placement and wiring of your optimized HCC and FCC cells using a SKILL script. The procedure below generates an N‑bit comparator schematic by:
@@ -469,14 +520,143 @@ procedure( createNBitComparator(N)
 )
 ```
 
-## How to Run
+## 8‑bit Comparator 
 
-1. Launch Cadence Virtuoso and load the library `lab5_Comparator.lib`.
-2. Open the schematic in each `version*/` directory and launch *ADE Explorer*.
-<!-- 3. Run the SPICE netlist with `hspice -i vsnX.spice -o vsnX.out`.
-4. Extract delays via grep/parsing scripts in `simulations/parse_delay.py`. -->
+### Schematic
 
-## Assumptions & Decisions
+![8‑bit Comparator Schematic](./images/Comp_8bit_Sch.png)
+
+
+### Testbench Schematic
+
+![8‑bit Comparator Testbench](./images/Comp_8bit_TB_Sch.png)
+
+### Testbench Pin Assignment (Maestro)
+
+![8‑bit Maestro Pin Assignments](./images/Comp_8bit_TB_Maestro.png)
+
+
+### Vector File
+
+```spice
+; =============================================================
+; 8‑bit Comparator – Worst‑Case Delay Vector File for Maestro
+; Inputs: A_in<0> B_in<0>
+; Outputs: O_out<2:1>
+; =============================================================
+radix 1 1
+io    i   i
+vname A_in<0>  B_in<0>
+
+; time unit and signal levels
+tunit ns
+slope 0.01
+vih   1.0
+vil   0.0
+
+; sequence through A,B = 00 -> 01 -> 11 -> 10 -> 01 -> 10 -> 00
+1   0   0    ; Oout=00
+3   0   1    ; Oout=01
+5   1   1    ; Oout=11
+7   1   0    ; Oout=10
+9   0   1    ; Oout=01
+11  1   0    ; Oout=10
+13  0   0    ; Oout=00
+```
+
+### Waveform and Delay Measurement
+
+![8‑bit Comparator Delay Waveform](./images/Comp_8bit_TB_Graph.png)
+
+**Measured Worst‑Case Delays**
+
+|   Output  | Delay (ps) |
+| :-------: | :--------: |
+| O\_out<1> |   292.92   |
+| O\_out<2> |   286.87   |
+
+## 16‑bit Comparator 
+
+### Schematic
+
+![16‑bit Comparator Schematic](./images/Comp_16bit_Sch.png)
+
+### Testbench Schematic
+
+![16‑bit Comparator Testbench](./images/Comp_16bit_TB_Sch.png)
+
+### Testbench Pin Assignment (Maestro)
+
+![16‑bit Maestro Pin Assignments](./images/Comp_16bit_TB_Maestro.png)
+
+### Vector File
+```spice
+; =============================================================
+; 16-bit Comparator – Worst-Case Delay Vector File for Maestro
+; Inputs: A, B
+; Outputs Oout<2:1> 
+; =============================================================
+
+radix 1 1
+io    i i
+vname A_in<0> B_in<0> 
+
+; time unit and signal levels
+tunit ns
+slope 0.01
+vih   1.0
+vil   0.0
+
+; sequence through A,B = 00 -> 01 -> 11 -> 10 -> 01 -> 10 -> 00
+1   0       0    ; A=0, B=0 -> Oout=00
+5   0       1    ; A=0, B=1 -> Oout=01
+9   1       1    ; A=1, B=1 -> Oout=11
+13  1       0    ; A=1, B=0 -> Oout=10
+17  0       1    ; A=0, B=1 -> Oout=01
+21  1       0    ; A=1, B=0 -> Oout=10
+25  0       0    ; A=0, B=0 -> Oout=00
+```
+### Waveform and Delay Measurement
+
+![16‑bit Comparator Delay Waveform](./images/Comp_16bit_TB_Graph.png)
+
+**Measured Worst‑Case Delays**
+
+|   Output  | Delay (ps) |
+| :-------: | :--------: |
+| O\_out<1> |   1117     |
+| O\_out<2> |   1111     |
+
+## Result Analysis
+
+As shown in Section 10 and validated in Sections 11 and 12, there is a significant discrepancy between our chain‑sum delay estimates and the actual measured delays for both the 8‑bit and 16‑bit comparators.
+
+**Table : Estimated vs. Actual Worst‑Case Delays**
+
+|  Chain |   Output  | Estimated (ps) | Actual (ps) |  Δ (ps) |  Δ (%)  |
+| :----: | :-------: | :------------: | :---------: | :-----: | :-----: |
+|  8‑bit | O\_out<1> |     214.83     |    292.92   |  +78.09 |  +36.4% |
+|        | O\_out<2> |     196.35     |    286.87   |  +90.52 |  +46.1% |
+| 16‑bit | O\_out<1> |     377.95     |     1117    | +739.05 | +195.6% |
+|        | O\_out<2> |     345.15     |     1111    | +765.85 | +222.0% |
+
+### Discussion
+
+1. **Interconnect and Parasitics:** Our estimates summarily added cell delays under idealized load conditions. In a full‑chain layout, metal interconnect resistance and capacitance accumulate super‑linearly over 8 and 16 stages, driving up both rise and fall times beyond simple stage‑sum predictions.
+
+2. **Buffer and Inverter Tree Overhead:** Each primary input and O\_out signal passes through a 2‑inverter buffer network, whose delay was accounted only once per cell in the HCC/FCC measurements. In the chained design, these buffers are effectively cascaded multiple times, compounding delay.
+
+3. **Load Variation:** Downstream cells present varying input capacitances depending on their internal structure. FCC\_D3’s transmission‑gate MUX has asymmetric capacitances on its select and pass transistors, causing skewed delays on O\_out<1> vs. O\_out<2> that our 1‑cell load model could not fully capture.
+
+4. **Slew Degradation:** The input slews slow as they propagate through the chain, especially for the 16‑bit version. Slower edge rates into subsequent cells increase their intrinsic propagation delay (slew‑dependent delay), leading to a further nonlinear increase in overall delay.
+
+5. **Corner‑Case Simulation Conditions:** Our test‑vector bench runs under nominal voltage and temperature. In realistic process corners (e.g. SS/TT/FF, high temperature), delays can stretch by 10–30%, exacerbating the deviation from ideal estimates.
+
+---
+
+While chain‑sum estimates provide a first‑order guideline, accurate worst‑case timing for multi‑stage comparators requires full‑chain parasitic extraction and slew‑aware simulation. The large Δ% for the 16‑bit design underscores the importance of layout parasitic planning and dynamic loading considerations in high‑speed VLSI comparator design.
+
+## Key Decisions
 
 * Inverter output drive strength sets realistic input slew for each stage.
 * Unused code `11` is accounted for FCC Truth table but never propagated to final outputs.
