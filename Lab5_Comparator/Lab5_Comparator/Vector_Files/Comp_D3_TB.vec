@@ -1,26 +1,24 @@
 ;==============================================================
-; 1-bit FCC Stage – Worst-Case Delay Vector File for Maestro
-; Inputs: A, B, Oin<2> (p), Oin<1> (q)
-; Outputs Oout<2:1> will follow p,q
-; All Oin<2:1> Combos with A=B=1
+; Comparator Testbench – Worst-Case Delay Vector File for Maestro
+; Inputs: A_in<0> B_in<0>
+; Output: O_out<2:1> (measured from FCC₂)
 ;==============================================================
-
-radix 1 1 1 1
-io    i i i i
-vname A_in<1> B_in<1> A_in<0> B_in<0> 
+radix 1 1
+io    i   i
+vname A_in<0>  B_in<0>
 
 ; time unit and signal levels
-tunit ns
-slope 0.01
-vih   1.0
-vil   0.0
+ tunit ns
+ slope 0.01
+ vih   1.0
+ vil   0.0
 
-; sequence through p,q = 00 -> 01 -> 11 -> 10 -> 00
-1   1  1    0       0    ; p=0, q=0 -> Oout=00
-2   1  1    0       1    ; p=0, q=1 -> Oout=01
-3   1  1    1       1    ; p=1, q=1 -> Oout=11
-4   1  1    1       0    ; p=1, q=0 -> Oout=10
-5   1  1    0       1    ; p=0, q=1 -> Oout=01
-6   1  1    1       0    ; p=1, q=0 -> Oout=10
-
-
+; sequence through A,B = 00 -> 01 -> 11 -> 10 -> 00
+; time   A   B    ; expected O_out<2:1>
+1       0   0    ; O=00  (HCC outputs ET→ propagate E=1)
+2       0   1    ; O=01  (HCC outputs LT→ evaluate LT)
+3       1   1    ; O=11  (ET→ propagate E=1)
+4       1   0    ; O=10  (HCC outputs GT→ evaluate GT)
+5       0   1    ; O=01  (back to LT→ eval path)
+6       1   0    ; O=10  (GT→ eval path)
+7       0   0    ; O=00  (ET→ propagate E=1)
