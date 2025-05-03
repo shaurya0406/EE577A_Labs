@@ -17,8 +17,11 @@ This repository contains files and documentation for **EE 577A Spring 2025**, 
 10. [Automatic Schematic Generation Using SKILL](#automatic-schematic-generation-using-skill)
 11. [8‑bit Comparator](#8bit-comparator)
 12. [16‑bit Comparator](#16bit-comparator)
-13. [Result Analysis](#result-analysis)
-14. [Assumptions & Decisions](#assumptions--decisions)
+13. [Discussion](#discussion)
+14. [8‑bit Comparator V2](#8bit-comparator-v2)
+15. [16‑bit Comparator V2](#16bit-comparator-v2)
+16. [Result Analysis](#result-analysis)
+17. [Key Decisions](#assumptions--decisions)
 
 ---
 
@@ -627,7 +630,7 @@ vil   0.0
 | O\_out<1> |   1117     |
 | O\_out<2> |   1111     |
 
-## Result Analysis
+## Discussion
 
 As shown in Section 10 and validated in Sections 11 and 12, there is a significant discrepancy between our chain‑sum delay estimates and the actual measured delays for both the 8‑bit and 16‑bit comparators.
 
@@ -639,8 +642,6 @@ As shown in Section 10 and validated in Sections 11 and 12, there is a signif
 |        | O\_out<2> |     196.35     |    286.87   |  +90.52 |  +46.1% |
 | 16‑bit | O\_out<1> |     377.95     |     1117    | +739.05 | +195.6% |
 |        | O\_out<2> |     345.15     |     1111    | +765.85 | +222.0% |
-
-### Discussion
 
 1. **Interconnect and Parasitics:** Our estimates summarily added cell delays under idealized load conditions. In a full‑chain layout, metal interconnect resistance and capacitance accumulate super‑linearly over 8 and 16 stages, driving up both rise and fall times beyond simple stage‑sum predictions.
 
@@ -655,6 +656,58 @@ As shown in Section 10 and validated in Sections 11 and 12, there is a signif
 ---
 
 While chain‑sum estimates provide a first‑order guideline, accurate worst‑case timing for multi‑stage comparators requires full‑chain parasitic extraction and slew‑aware simulation. The large Δ% for the 16‑bit design underscores the importance of layout parasitic planning and dynamic loading considerations in high‑speed VLSI comparator design.
+
+## Revised Designs
+The largest deviation in the multi‑bit comparator delays stemmed from input slew degradation through the transmission‑gate MUX in FCC_D3. To mitigate this, we substitute FCC_D3 with the complex‑gate design FCC_D2 (worst‑case delay 53.64 ps) while retaining HCC_D1.
+
+## 8‑bit Comparator V2
+
+### Waveform and Delay Measurement
+
+![Revised 8‑bit Comparator Delay Waveform](./images/Revised_Comp_8bit_TB_Delay_Graph.png)
+
+**Measured Worst‑Case Delays**
+
+|   Output  | Delay (ps) |
+| :-------: | :--------: |
+| O\_out<1> |   427.27   |
+| O\_out<2> |   384.29   |
+
+## 16‑bit Comparator V2
+
+### Waveform and Delay Measurement
+
+![Revised 8‑bit Comparator Delay Waveform](./images/Revised_Comp_16bit_TB_Delay_Graph.png)
+
+**Measured Worst‑Case Delays**
+
+|   Output  | Delay (ps) |
+| :-------: | :--------: |
+| O\_out<1> |   869.95   |
+| O\_out<2> |   783.51   |
+
+## Result Analysis
+
+After adopting FCC\_D2, we compare the updated chain‑sum estimates against actual measured delays:
+
+|  Chain |   Output  |       Estimated (ps)      | Actual (ps) | Δ (ps) |  Δ (%) |
+| :----: | :-------: | :-----------------------: | :---------: | :----: | :----: |
+|  8‑bit | O\_out<1> |  72.10 + 7×53.64 = 447.58 |    427.27   | –20.31 |  –4.5% |
+|        | O\_out<2> |  66.15 + 7×53.64 = 439.63 |    384.29   | –55.34 | –12.6% |
+| 16‑bit | O\_out<1> | 72.10 + 15×53.64 = 878.70 |    869.95   |  –8.75 |  –1.0% |
+|        | O\_out<2> | 66.15 + 15×53.64 = 871.75 |    783.51   | –88.24 | –10.1% |
+
+### Analysis of Improvements
+
+1. **Slew Stabilization:** Replacing the TG MUX with an AOI/OAI structure in FCC\_D2 substantially reduced the input capacitance irregularity, leading to more consistent edge rates and closer conformity to chain‑sum predictions.
+
+2. **Symmetric Output Loading:** FCC\_D2’s complementary gate construction yields more balanced capacitance on both output bits, narrowing the Δ% disparity between O\_out<1> and O\_out<2> (–4.5% vs. –12.6% for 8‑bit, –1.0% vs. –10.1% for 16‑bit).
+
+3. **Residual Nonlinearities:** The negative Δ indicates slight under‑prediction—actual delays are lower than estimates—due to conservative cell‑level delay models (we assumed worst‑case HCC\_D1 and FCC\_D2 delays for every stage).
+
+4. **Scalability:** The <1% deviation for O\_out<1> in the 16‑bit design validates the robustness of the revised approach for high‑bit‑width chains, simplifying timing closure in larger designs.
+
+**Overall, this confirms that careful selection of per‑cell logic styles—balancing intrinsic delay and loading—can dramatically improve multi‑stage comparator timing predictability.**
 
 ## Key Decisions
 
