@@ -677,7 +677,7 @@ The largest deviation in the multi‑bit comparator delays stemmed from input sl
 
 ### Waveform and Delay Measurement
 
-![Revised 8‑bit Comparator Delay Waveform](./images/Revised_Comp_16bit_TB_Delay_Graph.png)
+![Revised 16‑bit Comparator Delay Waveform](./images/Revised_Comp_16bit_TB_Delay_Graph.png)
 
 **Measured Worst‑Case Delays**
 
@@ -714,3 +714,93 @@ After adopting FCC\_D2, we compare the updated chain‑sum estimates against act
 * Inverter output drive strength sets realistic input slew for each stage.
 * Unused code `11` is accounted for FCC Truth table but never propagated to final outputs.
 * Transistor sizing is uniform and minimum unless otherwise noted.
+
+## Sizing & Buffering
+
+We have already sized all our gates and added inverters at the input and output of each cell.
+
+## Layout
+
+### Half‑Comparator Cell (HCC) Layout (Version 1)
+![HCC Design 1 Layout](./images/HCC_D1_Layout.png)
+![HCC Design 1 Layout DRC](./images/HCC_D1_Layout_DRC.png)
+![HCC Design 1 Layout LVS](./images/HCC_D1_Layout_LVS.png)
+
+### Full‑Comparator Cell (FCC) Layout (Version 2)
+![FCC Design 2 Layout](./images/FCC_D2_Layout.png)
+![FCC Design 2 Layout DRC](./images/FCC_D2_Layout_DRC.png)
+![FCC Design 2 Layout LVS](./images/FCC_D2_Layout_LVS.png)
+
+## Automatic Layout Generation using SKILL Script
+
+```scheme
+load("/home/viterbi/04/shauryac/work_gpdk045/SCRIPTS/myFunctions.il") ;<--your path
+
+libName      = "Lab5_Comparator"      ; your lib
+working_cell = "Comp_16bit_skill_test"
+symViewName  = "layout"               ; view name  
+hccName      = "HCC_D1"           
+fccName      = "FCC_D2"
+fccCellWidth = 5.6
+prevInst     = nil
+
+procedure(genCompArray(N)
+    cell = working_cell
+    lib = libName
+
+    cvSch=dbOpenCellViewByType(lib cell "schematic" "schematic" "r")
+    ; cvLay=lxGenFromSource(cvSch ?layViewName "layout" ?extractAfterGenerateAll t ?initCreateBoundary nil )
+    cvLay=dbOpenCellViewByType(lib cell "layout" "maskLayout" "a")
+    
+    geOpen(?lib lib ?cell cell ?view "layout" ?mode "a")
+    deInstallApp(getCurrentWindow() "Virtuoso XL")
+
+    x_index = 0
+    y_index = 0
+
+    for( i 0 N-1
+    ;; pick cell & instance name
+    if( i == 0 then
+      cellName = hccName
+      instName = "HCC0"
+      cellCreate(cellName, x_index, y_index, 0, 0)
+      x_index = x_index - fccCellWidth
+    else
+      cellName = fccName
+      instName = sprintf(nil "FCC%d" i)
+      cellCreate(cellName, x_index, y_index, 0, 0)
+      x_index = x_index - fccCellWidth
+    )
+
+    lxUpdateBinding(cvLay ?schCV cvSch)
+    )
+)
+```
+
+## 8-bit Comparator V2 Generated Layout
+
+![Comp 8bit Layout](./images/Comp_8bit_Layout.png)
+![Comp 8bit Layout DRC](./images/Comp_8bit_Layout_DRC.png)
+![Comp 8bit Layout LVS](./images/Comp_8bit_Layout_LVS.png)
+
+### 8-bit Comp Extracted Layout Simulation
+![Comp 8bit Layout Graph](./images/Comp_8bit_Layout_Graph.png)
+
+## 16-bit Comparator V2 Generated Layout
+
+![Comp 16bit Layout](./images/Comp_16bit_Layout.png)
+![Comp 16bit Layout DRC](./images/Comp_16bit_Layout_DRC.png)
+![Comp 16bit Layout LVS](./images/Comp_16bit_Layout_LVS.png)
+
+### 16-bit Comp Extracted Layout Simulation
+![Comp 16bit Layout Graph](./images/Comp_16bit_Layout_Graph.png)
+
+## Layout vs Schematic Delay Comparison
+
+| Comparator |   Output  | Schematic Delay (ps) | Layout Delay (ps) |
+| :--------: | :-------: | :------------------: | :---------------: |
+|    8-bit   | O\_out<1> |        427.27        |       636.78      |
+|    8-bit   | O\_out<2> |        384.29        |       677.64      |
+|   16-bit   | O\_out<1> |        869.95        |        1117       |
+|   16-bit   | O\_out<2> |        783.51        |        1111       |
+
